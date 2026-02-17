@@ -3,25 +3,16 @@ import { Text, View, StyleSheet, Dimensions } from 'react-native';
 
 export default function Index() {
   return (
-    // Container Utama (Background Abu-abu)
     <View style={styles.container}>
-      
-      {/* Kartu Putih */}
       <View style={styles.card}>
-        
-        {/* Lingkaran Hijau (Avatar) */}
         <View style={styles.avatar} />
-        
-        {/* Teks Sapaan */}
         <Text style={styles.title}>Halo Julius!</Text>
         <Text style={styles.subtitle}>Fulus Siap Digunakan</Text>
-        
       </View>
     </View>
   );
 }
 
-// Disinilah kita menulis CSS-nya
 const styles = StyleSheet.create({
   container: {
     flex: 1, // Mengisi seluruh layar
