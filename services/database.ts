@@ -93,6 +93,16 @@ export const getWallets = (): Wallet[] => {
     }
 };
 
+// Ambil categories
+export const getCategories = (): any[] => {
+    try {
+        return db.getAllSync('SELECT * FROM categories');
+    } catch (error) {
+        console.error('Error getting categories:', error);
+        return [];
+    }
+};
+
 // Ambil Total Saldo Wallet
 export const getTotalBalance = (): number => {
     try {
@@ -122,6 +132,34 @@ export const getRecentTransactions = (): Transaction[] => {
     } catch (error) {
         console.error('Error getting transactions:', error);
         return [];
+    }
+};
+
+// Function query tambah Transaksi
+export const addTransaction = (
+    walletId: number, 
+    categoryId: number, 
+    amount: number, 
+    date: string, 
+    type: string,
+    note: string = ''
+) => {
+    try {
+        db.execSync(`
+        INSERT INTO transactions (wallet_id, category_id, amount, date, type, note)
+        VALUES (${walletId}, ${categoryId}, ${amount}, '${date}', '${type}', '${note}');
+        `);
+        
+        if (type === 'EXPENSE') {
+            db.execSync(`UPDATE wallets SET balance = balance - ${amount} WHERE id = ${walletId}`);
+        } else if (type === 'INCOME') {
+            db.execSync(`UPDATE wallets SET balance = balance + ${amount} WHERE id = ${walletId}`);
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error adding transaction:', error);
+        return false;
     }
 };
 

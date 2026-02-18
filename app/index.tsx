@@ -2,9 +2,10 @@ import React, { useCallback, useState } from 'react';
 import { 
   Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions 
 } from 'react-native';
-import { useFocusEffect } from 'expo-router'; // Penting agar data refresh saat kembali ke layar ini
+import { useFocusEffect } from 'expo-router';
 import { getWallets, getTotalBalance, getRecentTransactions } from '../services/database';
 import { Wallet, Transaction } from '../constants/types';
+import AddTransactionModal from './addTransactionModal';
 
 const formatRupiah = (number: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -15,6 +16,7 @@ const formatRupiah = (number: number) => {
 }
 
 export default function Index() {
+  const [isModalVisible, setModalVisible] = useState(false);
   const [totalBalance, setTotalBalance] = useState(0);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [recentTrx, setRecentTrx] = useState<Transaction[]>([]);
@@ -73,7 +75,7 @@ export default function Index() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Aktivitas Terakhir</Text>
             <View style={styles.addButton}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>+</Text>
+              <Text onPress={() => setModalVisible(true)} style={{ color: 'white', fontWeight: 'bold' }}>+</Text>
             </View>
           </View>
 
@@ -95,6 +97,14 @@ export default function Index() {
           )}
         </View>
       </ScrollView>
+      <AddTransactionModal 
+        visible={isModalVisible} 
+        onClose={() => setModalVisible(false)}
+        onSuccess={() => {
+          loadData();
+          setModalVisible(false);
+        }}
+      />
     </View>
   );
 }
