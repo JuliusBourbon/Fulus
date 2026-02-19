@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
 import {  useFocusEffect } from 'expo-router';
-import { getGoals, addGoal } from '../services/database';
-import { Goal } from '../constants/types';
+import { getGoals, addGoal, getWallets, addSavingsToGoal } from '../services/database';
+import { Goal, Wallet } from '../constants/types';
+import AddSavingsModal from './addSavingModal';
 
 const formatRupiah = (number: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
@@ -10,12 +11,16 @@ const formatRupiah = (number: number) => {
 
 export default function GoalsScreen() {
     const [goals, setGoals] = useState<Goal[]>([]);
+    const [wallets, setWallets] = useState<Wallet[]>([]);
     const [isModalVisible, setModalVisible] = useState(false);
     const [goalName, setGoalName] = useState('');
     const [targetAmount, setTargetAmount] = useState('');
+    const [isNabungModalVisible, setNabungModalVisible] = useState(false);
+    const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
 
     const loadGoals = () => {
         setGoals(getGoals());
+        setWallets(getWallets());
     };
 
     useFocusEffect(
@@ -37,7 +42,6 @@ export default function GoalsScreen() {
             loadGoals(); 
         }
     };
-
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -67,6 +71,17 @@ export default function GoalsScreen() {
                                 <Text style={styles.progressTextL}>{formatRupiah(goal.saved_amount)} terkumpul</Text>
                                 <Text style={styles.progressTextR}>{progress.toFixed(0)}%</Text>
                             </View>
+                            {progress < 100 && (
+                                <TouchableOpacity 
+                                    style={styles.nabungBtn}
+                                    onPress={() => {
+                                        setSelectedGoal(goal);
+                                        setNabungModalVisible(true);
+                                    }}
+                                >
+                                    <Text style={styles.nabungBtnText}>+ Isi Tabungan</Text>
+                                </TouchableOpacity>
+                            )}
                         </View>
                         );
                     })
@@ -95,6 +110,16 @@ export default function GoalsScreen() {
                     </View>
                 </View>
             </Modal>
+            <AddSavingsModal 
+                visible={isNabungModalVisible}
+                goal={selectedGoal}
+                wallets={wallets}
+                onClose={() => setNabungModalVisible(false)}
+                onSuccess={() => {
+                setNabungModalVisible(false);
+                loadGoals();
+                }}
+            />
         </View>
     );
 }
@@ -131,5 +156,11 @@ const styles = StyleSheet.create({
     input: { backgroundColor: '#F3F4F6', padding: 12, borderRadius: 12, fontSize: 16, marginBottom: 16 },
     btnRow: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, marginTop: 10 },
     cancelBtn: { backgroundColor: '#E5E7EB', padding: 12, borderRadius: 12, paddingHorizontal: 20 },
-    saveBtn: { backgroundColor: '#10B981', padding: 12, borderRadius: 12, paddingHorizontal: 20 }
+    saveBtn: { backgroundColor: '#10B981', padding: 12, borderRadius: 12, paddingHorizontal: 20 },
+
+    // Save styles
+    nabungBtn: { backgroundColor: '#ECFDF5', padding: 12, borderRadius: 12, alignItems: 'center', marginTop: 16, borderWidth: 1, borderColor: '#10B981' },
+    nabungBtnText: { color: '#10B981', fontWeight: 'bold' },
+    chip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F3F4F6', marginRight: 8, borderWidth: 1, borderColor: '#E5E7EB', height: 40, justifyContent: 'center' },
+    chipActive: { backgroundColor: '#10B981', borderColor: '#10B981' },
 });

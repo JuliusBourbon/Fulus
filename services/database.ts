@@ -282,6 +282,32 @@ export const getTopGoals = (): Goal[] => {
     }
 };
 
+// Function query tambah progress Goals
+export const addSavingsToGoal = (
+    goalId: number, 
+    walletId: number, 
+    amount: number, 
+    goalName: string
+    ) => {
+    try {
+        const date = new Date().toISOString();
+        
+        db.execSync(`UPDATE goals SET saved_amount = saved_amount + ${amount} WHERE id = ${goalId}`);
+        
+        db.execSync(`UPDATE wallets SET balance = balance - ${amount} WHERE id = ${walletId}`);
+        
+        db.execSync(`
+            INSERT INTO transactions (wallet_id, category_id, amount, date, type, note)
+            VALUES (${walletId}, NULL, ${amount}, '${date}', 'EXPENSE', 'Menabung untuk: ${goalName}');
+        `);
+        
+        return true;
+    } catch (error) {
+        console.error('Error adding savings:', error);
+        return false;
+    }
+};
+
 export const resetDatabase = () => {
     try {
         db.execSync(`
