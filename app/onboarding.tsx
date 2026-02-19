@@ -2,21 +2,28 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { completeOnboarding } from '../services/database';
+import { createAvatar } from '@dicebear/core';
+import { thumbs } from '@dicebear/collection';
+import { SvgXml } from 'react-native-svg';
 
-const EMOJI_LIST = ['👨‍💻', '👩‍💻', '😎'];
+const avatarList = ['Avery', 'Felix', 'Aneka', 'Brian', 'Destiny', 'Eden', 'Fiona', 'Nolan'];
 
 export default function OnboardingScreen() {
     const router = useRouter();
     const [name, setName] = useState('');
-    const [selectedEmoji, setSelectedEmoji] = useState(EMOJI_LIST[0]);
+    const [selecetedAvatar, setSelectedAvatar] = useState(avatarList[0]);
+
+    const getAvatarSvg = (seedName: string) => {
+        return createAvatar(thumbs, { seed: seedName, radius: 50 }).toString();
+    };
 
     const handleStart = () => {
         if (!name.trim()) {
-        alert('Tulis namamu dulu ya!');
+        alert('Isi nama terlebih dahulu!');
         return;
         }
 
-        completeOnboarding(name, selectedEmoji);
+        completeOnboarding(name, selecetedAvatar);
         router.replace('/');
     };
 
@@ -42,19 +49,19 @@ export default function OnboardingScreen() {
 
                     <View style={styles.inputContainer}>
                         <Text style={styles.label}>Pilih Avatar</Text>
-                        <View style={{ flex: 1, alignItems: 'center' }}>
+                        <View style={{ alignItems: 'center' }}>
                             <View style={styles.iconContainer}>
-                                <Text style={styles.iconText}>{selectedEmoji}</Text>
+                                <SvgXml xml={getAvatarSvg(selecetedAvatar)} width={100} height={100} />
                             </View>
                         </View>
-                        <View style={styles.emojiGrid}>
-                        {EMOJI_LIST.map((emoji, index) => (
+                        <View style={styles.avatarGrid}>
+                        {avatarList.map((seed, index) => (
                             <TouchableOpacity 
                                 key={index}
-                                style={[styles.emojiBtn, selectedEmoji === emoji && styles.emojiBtnActive]}
-                                onPress={() => setSelectedEmoji(emoji)}
+                                    style={[styles.avatarBtn, selecetedAvatar === seed && styles.avatarBtnActive]}
+                                onPress={() => setSelectedAvatar(seed)}
                             >
-                                <Text style={styles.emojiItemText}>{emoji}</Text>
+                                <SvgXml xml={getAvatarSvg(seed)} width={45} height={45} />
                             </TouchableOpacity>
                         ))}
                         </View>
@@ -85,10 +92,9 @@ const styles = StyleSheet.create({
     label: { fontSize: 18, fontWeight: 'bold', color: '#F1EDEA', marginBottom: 8 },
     input: { backgroundColor: '#F3F4F6', padding: 16, borderRadius: 12, fontSize: 16, color: '#1F2937', borderWidth: 1, borderColor: '#E5E7EB' },
     
-    emojiGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, justifyContent: 'center' },
-    emojiBtn: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#F3F4F6', justifyContent: 'center', alignItems: 'center', borderWidth: 2, borderColor: 'transparent' },
-    emojiBtnActive: { backgroundColor: '#ECFDF5', borderColor: '#10B981' },
-    emojiItemText: { fontSize: 24 },
+    avatarGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, justifyContent: 'center' },
+    avatarBtn: { width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', borderWidth: 3, borderColor: 'transparent' },
+    avatarBtnActive: { backgroundColor: '#ECFDF5', borderColor: '#10B981' },
 
     bottomContainer: { padding: 24, paddingBottom: 40 },
     startBtn: { backgroundColor: 'white', paddingVertical: 18, borderRadius: 16, alignItems: 'center', shadowColor: "#10B981", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 5 },
