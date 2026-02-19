@@ -96,9 +96,9 @@ export default function Index() {
               </View>
               <View>
                 <Text style={styles.greeting}>Halo, {userName}</Text>
-                <Text style={styles.labelTotal}>Total Saldo Kamu</Text>
               </View>
             </View>
+            <Text style={styles.labelTotal}>Total Saldo Kamu</Text>
             <Text style={styles.totalAmount}>{formatRupiah(totalBalance)}</Text>
           </View>
           
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   header: { 
     padding: 24, 
     paddingTop: 60, 
-    backgroundColor: 'white', 
+    backgroundColor: '#05B084', 
     borderBottomLeftRadius: 24, 
     borderBottomRightRadius: 24,
     flexDirection: 'row', 
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start'
   },
 
-  userContainer: {flexDirection: 'row', gap: 10},
+  userContainer: {flexDirection: 'row', gap: 10, alignItems: 'center', marginBottom: 15},
   avatarContainer: { backgroundColor: '#05B084', alignItems: 'center', justifyContent: 'center', borderRadius: 30, paddingHorizontal: 15 },
   
   settingsBtn: {
@@ -267,9 +267,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
     borderRadius: 20,
   },
-  greeting: { fontSize: 16, color: '#161D1C', fontWeight: 'bold'},
-  labelTotal: { fontSize: 14, color: '#161D1C', marginTop: 8 },
-  totalAmount: { fontSize: 32, fontWeight: 'bold', color: '#05B084', marginTop: 4 },
+  greeting: { fontSize: 16, color: 'white', fontWeight: 'bold'},
+  labelTotal: { fontSize: 14, color: 'white', marginTop: 8 },
+  totalAmount: { fontSize: 32, fontWeight: 'bold', color: 'white', marginTop: 4 },
 
   // Section
   section: { marginTop: 24, paddingHorizontal: 24, },
