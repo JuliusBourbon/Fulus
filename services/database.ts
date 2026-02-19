@@ -138,22 +138,31 @@ export const getRecentTransactions = (): Transaction[] => {
 // Function query tambah Transaksi
 export const addTransaction = (
     walletId: number, 
-    categoryId: number, 
+    categoryId: number | null, 
     amount: number, 
     date: string, 
     type: string,
-    note: string = ''
+    note: string = '',
+    targetWalletId: number | null = null
 ) => {
     try {
+        const categoryIdQuery = categoryId ? categoryId : 'NULL';
+        const targetIdQuery = targetWalletId ? targetWalletId : 'NULL';
+
         db.execSync(`
-        INSERT INTO transactions (wallet_id, category_id, amount, date, type, note)
-        VALUES (${walletId}, ${categoryId}, ${amount}, '${date}', '${type}', '${note}');
+            INSERT INTO transactions (wallet_id, category_id, amount, date, type, note)
+            VALUES (${walletId}, ${categoryIdQuery}, ${amount}, '${date}', '${type}', '${note}');
         `);
         
         if (type === 'EXPENSE') {
             db.execSync(`UPDATE wallets SET balance = balance - ${amount} WHERE id = ${walletId}`);
-        } else if (type === 'INCOME') {
+        } 
+        else if (type === 'INCOME') {
             db.execSync(`UPDATE wallets SET balance = balance + ${amount} WHERE id = ${walletId}`);
+        } 
+        else if (type === 'TRANSFER' && targetWalletId) {
+            db.execSync(`UPDATE wallets SET balance = balance - ${amount} WHERE id = ${walletId}`);
+            db.execSync(`UPDATE wallets SET balance = balance + ${amount} WHERE id = ${targetWalletId}`);
         }
         
         return true;
