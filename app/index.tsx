@@ -1,11 +1,14 @@
 import React, { useCallback, useState } from 'react';
 import { 
-  Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions 
+  Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, 
+  TouchableOpacity
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { getWallets, getTotalBalance, getRecentTransactions } from '../services/database';
 import { Wallet, Transaction } from '../constants/types';
 import AddTransactionModal from './addTransactionModal';
+import AddWalletModal from './addWalletModal';
+import DeleteWalletModal from './deleteWalletModal';
 
 const formatRupiah = (number: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -16,7 +19,10 @@ const formatRupiah = (number: number) => {
 }
 
 export default function Index() {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [selectedWalletId, setSelectedWalletId] = useState<number>(0);
+  const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [isWalletModalVisible, setWalletModalVisible] = useState(false);
+  const [isTrxModalVisible, setTrxModalVisible] = useState(false);
   const [totalBalance, setTotalBalance] = useState(0);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [recentTrx, setRecentTrx] = useState<Transaction[]>([]);
@@ -58,11 +64,26 @@ export default function Index() {
 
         {/* Wallet */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Dompet</Text>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Dompet Saya</Text>
+              <TouchableOpacity onPress={() => setWalletModalVisible(true)}>
+                <Text style={{color: '#05B084', fontWeight: 'bold'}}>+ Tambah</Text>
+              </TouchableOpacity>
+          </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.walletListContainer}>
             {wallets.map((wallet) => (
               <View key={wallet.id} style={styles.walletCard}>
-                <Text style={styles.walletName}>{wallet.name}</Text>
+                <View style={styles.cardHeader}>
+                  <Text style={styles.walletName}>{wallet.name}</Text>
+                  <TouchableOpacity style={styles.deleteButton} onPress={() => {
+                      setSelectedWalletId(wallet.id); 
+                      setDeleteModalVisible(true);
+                    }}
+                    activeOpacity={0.8}  
+                  >
+                    <Text style={{color: 'white', fontWeight: 'bold'}}>- Hapus</Text>
+                  </TouchableOpacity>
+                </View>
                 <Text style={styles.walletType}>{wallet.type}</Text>
                 <Text style={styles.walletBalance}>{formatRupiah(wallet.balance)}</Text>
               </View>
@@ -75,7 +96,7 @@ export default function Index() {
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Aktivitas Terakhir</Text>
             <View style={styles.addButton}>
-              <Text onPress={() => setModalVisible(true)} style={{ color: 'white', fontWeight: 'bold' }}>+</Text>
+              <Text onPress={() => setTrxModalVisible(true)} style={{ color: 'white', fontWeight: 'bold' }}>+</Text>
             </View>
           </View>
 
@@ -98,11 +119,29 @@ export default function Index() {
         </View>
       </ScrollView>
       <AddTransactionModal 
-        visible={isModalVisible} 
-        onClose={() => setModalVisible(false)}
+        visible={isTrxModalVisible} 
+        onClose={() => setTrxModalVisible(false)}
         onSuccess={() => {
           loadData();
-          setModalVisible(false);
+          setTrxModalVisible(false);
+        }}
+      />
+
+      <AddWalletModal
+        visible={isWalletModalVisible}
+        onClose={() => setWalletModalVisible(false)}
+        onSuccess={() => {
+          loadData();
+          setWalletModalVisible(false);
+        }}
+      />
+      <DeleteWalletModal
+        visible={isDeleteModalVisible}
+        walletId={selectedWalletId}
+        onClose={() => setDeleteModalVisible(false)}
+        onSuccess={() => {
+            loadData();
+            setDeleteModalVisible(false);
         }}
       />
     </View>
@@ -117,6 +156,7 @@ const styles = StyleSheet.create({
   labelTotal: { fontSize: 14, color: '#161D1C', marginTop: 8 },
   totalAmount: { fontSize: 32, fontWeight: 'bold', color: '#05B084', marginTop: 4 },
 
+  // Section
   section: { marginTop: 24, paddingHorizontal: 24, },
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
   sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#161D1C', marginBottom: 12 },
@@ -135,6 +175,7 @@ const styles = StyleSheet.create({
     marginRight: 12,
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3
   },
+  cardHeader: {flexDirection: 'row', justifyContent: 'space-between'},
   walletName: { color: 'white', fontWeight: 'bold', fontSize: 16 },
   walletType: { color: 'rgba(255,255,255,0.8)', fontSize: 12, marginTop: 4 },
   walletBalance: { color: 'white', fontWeight: 'bold', fontSize: 16, marginTop: 12 },
@@ -147,5 +188,6 @@ const styles = StyleSheet.create({
   trxAmount: { fontWeight: 'bold' },
 
   addButton: { width: 30, height: 30, backgroundColor: '#05B084', borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
+  deleteButton: {borderRadius: 15, alignItems: 'center', justifyContent: 'center'},
   emptyState: { textAlign: 'center', color: '#9CA3AF', marginTop: 20, fontStyle: 'italic' }
 });

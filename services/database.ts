@@ -163,6 +163,44 @@ export const addTransaction = (
     }
 };
 
+// Function query tambah Wallet
+export const addWallet = (name: string, type: string, initialBalance: number = 0) => {
+    try {
+        db.execSync(`
+            INSERT INTO wallets (name, type, balance, icon)
+            VALUES ('${name}', '${type}', ${initialBalance}, 'wallet-outline');
+        `);
+        
+        if (initialBalance > 0) {
+            const result = db.getFirstSync<{id: number}>('SELECT last_insert_rowid() as id');
+            const newWalletId = result?.id;
+            
+            if (newWalletId) {
+                const date = new Date().toISOString();
+                db.execSync(`
+                    INSERT INTO transactions (wallet_id, category_id, amount, date, type, note)
+                    VALUES (${newWalletId}, NULL, ${initialBalance}, '${date}', 'INCOME', 'Saldo Awal');
+                `);
+            }
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error adding wallet:', error);
+        return false;
+    }
+};
+
+export const deleteWallet = (id: number) => {
+    try {
+        db.execSync(`DELETE FROM wallets WHERE id = ${id}`);
+        db.execSync(`DELETE FROM transactions WHERE wallet_id = ${id}`);
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
 export const resetDatabase = () => {
     try {
         db.execSync(`
