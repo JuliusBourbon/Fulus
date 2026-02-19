@@ -41,6 +41,7 @@ export const initDatabase = () => {
         CREATE TABLE IF NOT EXISTS user_settings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
+            avatar TEXT, -- <--- TAMBAHKAN INI
             is_onboarded BOOLEAN DEFAULT 0
         );
 
@@ -87,6 +88,44 @@ export const initDatabase = () => {
         console.log('Database siap digunakan 🚀');
     } catch (error) {
         console.error('Error init database:', error);
+    }
+};
+
+// Cek Status Onboarding
+export const getOnboardingStatus = (): boolean => {
+    try {
+        const result = db.getFirstSync<{ is_onboarded: number }>('SELECT is_onboarded FROM user_settings LIMIT 1');
+        return result?.is_onboarded === 1;
+    } catch (error) {
+        console.error('Error getting onboarding status:', error);
+        return false;
+    }
+};
+
+// Set Onboarding
+export const completeOnboarding = (name: string, avatar: string) => {
+    try {
+        const result = db.getFirstSync<{ count: number }>('SELECT COUNT(*) as count FROM user_settings');
+
+        if (result && result.count === 0) {
+            db.execSync(`INSERT INTO user_settings (name, avatar, is_onboarded) VALUES ('${name}', '${avatar}', 1)`);
+        } else {
+            db.execSync(`UPDATE user_settings SET name = '${name}', avatar = '${avatar}', is_onboarded = 1`);
+        }
+        return true;
+    } catch (error) {
+        console.error('Error completing onboarding:', error);
+        return false;
+    }
+};
+
+// Ambil User
+export const getUserProfile = () => {
+    try {
+        return db.getFirstSync<{ name: string, avatar: string }>('SELECT name, avatar FROM user_settings LIMIT 1');
+    } catch (error) {
+        console.error('Error getting profile:', error);
+        return { name: 'User', avatar: '😎' };
     }
 };
 
@@ -314,11 +353,14 @@ export const resetDatabase = () => {
             DROP TABLE IF EXISTS transactions;
             DROP TABLE IF EXISTS categories;
             DROP TABLE IF EXISTS wallets;
+            DROP TABLE IF EXISTS goals;
             DROP TABLE IF EXISTS user_settings;
         `);
-        console.log('Database di-reset. Restart aplikasi untuk init ulang.');
+        console.log('Database berhasil di-reset.');
+        return true;
     } catch (error) {
         console.error('Gagal reset:', error);
+        return false;
     }
 };
 

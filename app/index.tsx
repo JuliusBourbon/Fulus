@@ -4,7 +4,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { getWallets, getTotalBalance, getRecentTransactions, getTopGoals } from '../services/database';
+import { getWallets, getTotalBalance, getRecentTransactions, getTopGoals, getOnboardingStatus, getUserProfile } from '../services/database';
 import { Wallet, Transaction, Goal } from '../constants/types';
 import AddTransactionModal from './addTransactionModal';
 import AddWalletModal from './addWalletModal';
@@ -20,6 +20,8 @@ const formatRupiah = (number: number) => {
 
 export default function Index() {
   const router = useRouter();
+  const [userName, setUserName] = useState('');
+  const [userAvatar, setUserAvatar] = useState('👋');
   const [selectedWalletId, setSelectedWalletId] = useState<number>(0);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isWalletModalVisible, setWalletModalVisible] = useState(false);
@@ -30,7 +32,24 @@ export default function Index() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
+  useFocusEffect(
+    useCallback(() => {
+      const hasOnboarded = getOnboardingStatus();
+      if (!hasOnboarded) {
+        router.replace('/onboarding');
+        return;
+      }
+
+      loadData();
+    }, [])
+  );
+
   const loadData = () => {
+    const profile = getUserProfile();
+    if (profile) {
+      setUserName(profile.name);
+      setUserAvatar(profile.avatar);
+    }
     const saldo = getTotalBalance();
     const dompet = getWallets();
     const transaksi = getRecentTransactions();
@@ -61,9 +80,26 @@ export default function Index() {
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.greeting}>Halo, Julius</Text>
-          <Text style={styles.labelTotal}>Total Saldo Kamu</Text>
-          <Text style={styles.totalAmount}>{formatRupiah(totalBalance)}</Text>
+          <View style={{ flex: 1 }}>
+            <View style={styles.userContainer}>
+              <View style={styles.avatarContainer}>
+                <Text style={{ fontSize: 18 }}>{userAvatar}</Text>
+              </View>
+              <View>
+                <Text style={styles.greeting}>Halo, {userName}</Text>
+                <Text style={styles.labelTotal}>Total Saldo Kamu</Text>
+              </View>
+            </View>
+            <Text style={styles.totalAmount}>{formatRupiah(totalBalance)}</Text>
+          </View>
+          
+          {/* Tombol Settings (Ikon Gear) */}
+          <TouchableOpacity 
+            onPress={() => router.push('/settings')} 
+            style={styles.settingsBtn}
+          >
+            <Text style={{fontSize: 24}}>⚙️</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Wallet */}
@@ -203,7 +239,25 @@ export default function Index() {
 const styles = StyleSheet.create({
   // Header
   container: { flex: 1, backgroundColor: '#F3F4F6' },
-  header: { padding: 24, paddingTop: 60, backgroundColor: 'white', borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
+  header: { 
+    padding: 24, 
+    paddingTop: 60, 
+    backgroundColor: 'white', 
+    borderBottomLeftRadius: 24, 
+    borderBottomRightRadius: 24,
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignItems: 'flex-start'
+  },
+
+  userContainer: {flexDirection: 'row', gap: 10},
+  avatarContainer: { backgroundColor: '#05B084', alignItems: 'center', justifyContent: 'center', borderRadius: 30, paddingHorizontal: 15 },
+  
+  settingsBtn: {
+    padding: 8,
+    backgroundColor: '#F3F4F6',
+    borderRadius: 20,
+  },
   greeting: { fontSize: 16, color: '#161D1C', fontWeight: 'bold'},
   labelTotal: { fontSize: 14, color: '#161D1C', marginTop: 8 },
   totalAmount: { fontSize: 32, fontWeight: 'bold', color: '#05B084', marginTop: 4 },
