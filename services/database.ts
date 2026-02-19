@@ -1,4 +1,4 @@
-import { Transaction, Wallet } from '@/constants/types';
+import { Goal, Transaction, Wallet } from '@/constants/types';
 import * as SQLite from 'expo-sqlite';
 
 // Membuka atau membuat file database 'fulus.db'
@@ -42,6 +42,14 @@ export const initDatabase = () => {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
             is_onboarded BOOLEAN DEFAULT 0
+        );
+
+        CREATE TABLE IF NOT EXISTS goals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            target_amount INTEGER NOT NULL,
+            saved_amount INTEGER DEFAULT 0,
+            deadline TEXT
         );
         `);
 
@@ -131,6 +139,16 @@ export const getRecentTransactions = (): Transaction[] => {
         return transactions;
     } catch (error) {
         console.error('Error getting transactions:', error);
+        return [];
+    }
+};
+
+// Ambil Goals
+export const getGoals = (): Goal[] => {
+    try {
+        return db.getAllSync<Goal>('SELECT * FROM goals ORDER BY id DESC');
+    } catch (error) {
+        console.error('Error getting goals:', error);
         return [];
     }
 };
@@ -230,6 +248,36 @@ export const getExpenseStats = (walletId?: number) => {
         return db.getAllSync(query);
     } catch (error) {
         console.error('Error getting stats:', error);
+        return [];
+    }
+};
+
+// Function query tambah Goal
+export const addGoal = (name: string, targetAmount: number, deadline: string = '') => {
+    try {
+        db.execSync(`
+        INSERT INTO goals (name, target_amount, saved_amount, deadline)
+        VALUES ('${name}', ${targetAmount}, 0, '${deadline}')
+        `);
+        return true;
+    } catch (error) {
+        console.error('Error adding goal:', error);
+        return false;
+    }
+};
+
+// Function query top goals
+export const getTopGoals = (): Goal[] => {
+    try {
+        const query = `
+            SELECT *, (saved_amount * 100.0 / target_amount) as progress 
+            FROM goals 
+            ORDER BY progress DESC 
+            LIMIT 3
+        `;
+        return db.getAllSync<Goal>(query);
+    } catch (error) {
+        console.error('Error getting top goals:', error);
         return [];
     }
 };

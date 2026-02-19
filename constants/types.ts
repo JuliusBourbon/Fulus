@@ -19,3 +19,11 @@ export interface Transaction {
     category_color?: string;
     wallet_name?: string;
 }
+
+export interface Goal {
+  id: number;
+  name: string;
+  target_amount: number;
+  saved_amount: number;
+  deadline?: string;
+}

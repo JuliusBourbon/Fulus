@@ -4,8 +4,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { getWallets, getTotalBalance, getRecentTransactions } from '../services/database';
-import { Wallet, Transaction } from '../constants/types';
+import { getWallets, getTotalBalance, getRecentTransactions, getTopGoals } from '../services/database';
+import { Wallet, Transaction, Goal } from '../constants/types';
 import AddTransactionModal from './addTransactionModal';
 import AddWalletModal from './addWalletModal';
 import DeleteWalletModal from './deleteWalletModal';
@@ -27,16 +27,19 @@ export default function Index() {
   const [totalBalance, setTotalBalance] = useState(0);
   const [wallets, setWallets] = useState<Wallet[]>([]);
   const [recentTrx, setRecentTrx] = useState<Transaction[]>([]);
+  const [goals, setGoals] = useState<Goal[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const loadData = () => {
     const saldo = getTotalBalance();
     const dompet = getWallets();
     const transaksi = getRecentTransactions();
+    const tujuan = getTopGoals();
 
     setTotalBalance(saldo);
     setWallets(dompet);
     setRecentTrx(transaksi);
+    setGoals(tujuan)
   };
 
 
@@ -125,6 +128,47 @@ export default function Index() {
             ))
           )}
         </View>
+        <View style={[styles.section, { marginBottom: 40 }]}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Tujuan Finansial</Text>
+            <TouchableOpacity onPress={() => router.push('/goals')}>
+              <Text style={{color: '#10B981', fontWeight: 'bold'}}>Lihat Semua →</Text>
+            </TouchableOpacity>
+          </View>
+          
+          {goals.length === 0 ? (
+            <TouchableOpacity 
+              style={styles.emptyGoalBtn}
+              onPress={() => router.push('/goals')}
+              activeOpacity={0.7}
+            >
+              <Text style={{color: '#6B7280'}}>Belum ada tujuan. Tambah sekarang!</Text>
+            </TouchableOpacity>
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.goalListContainer}>
+              {goals.map((goal) => {
+                const progress = Math.min((goal.saved_amount / goal.target_amount) * 100, 100);
+                
+                return (
+                  <TouchableOpacity 
+                    key={goal.id} 
+                    style={styles.goalCardHome}
+                    onPress={() => router.push('/goals')}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.goalNameHome}>{goal.name}</Text>
+                    <Text style={styles.goalAmountHome}>{formatRupiah(goal.target_amount)}</Text>
+                    
+                    <View style={styles.progressBarContainerHome}>
+                      <View style={[styles.progressBarFillHome, { width: `${progress}%` }]} />
+                    </View>
+                    <Text style={styles.progressTextHome}>{progress.toFixed(0)}% Terkumpul</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+          )}
+        </View>
       </ScrollView>
       <AddTransactionModal 
         visible={isTrxModalVisible} 
@@ -197,5 +241,23 @@ const styles = StyleSheet.create({
 
   addButton: { width: 30, height: 30, backgroundColor: '#05B084', borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
   deleteButton: {borderRadius: 15, alignItems: 'center', justifyContent: 'center'},
-  emptyState: { textAlign: 'center', color: '#9CA3AF', marginTop: 20, fontStyle: 'italic' }
+  emptyState: { textAlign: 'center', color: '#9CA3AF', marginTop: 20, fontStyle: 'italic' },
+
+  // Goals Styles
+  emptyGoalBtn: { backgroundColor: 'white', padding: 16, borderRadius: 16, alignItems: 'center', borderWidth: 1, borderColor: '#E5E7EB', borderStyle: 'dashed' },
+  goalListContainer: { paddingHorizontal: 24, paddingBottom: 10 },
+  goalCardHome: { 
+    backgroundColor: '#05B084',
+    padding: 16, 
+    borderRadius: 16, 
+    width: 240,
+    marginRight: 12,
+    shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3
+  },
+  goalNameHome: { color: 'rgba(255,255,255,0.8)', fontSize: 14, fontWeight: 'bold', marginBottom: 4 },
+  goalAmountHome: { color: 'white', fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
+  
+  progressBarContainerHome: { height: 8, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 4, overflow: 'hidden', marginBottom: 6 },
+  progressBarFillHome: { height: '100%', backgroundColor: '#34D399' },
+  progressTextHome: { color: 'white', fontSize: 10, textAlign: 'right', fontWeight: 'bold' }
 });
