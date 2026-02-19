@@ -95,9 +95,9 @@ export default function Index() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Aktivitas Terakhir</Text>
-            <View style={styles.addButton}>
-              <Text onPress={() => setTrxModalVisible(true)} style={{ color: 'white', fontWeight: 'bold' }}>+</Text>
-            </View>
+            <TouchableOpacity onPress={() => setTrxModalVisible(true)} style={styles.addButton}>
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>+</Text>
+            </TouchableOpacity>
           </View>
 
           {recentTrx.length === 0 ? (
