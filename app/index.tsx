@@ -3,7 +3,7 @@ import {
   Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, 
   TouchableOpacity
 } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { getWallets, getTotalBalance, getRecentTransactions } from '../services/database';
 import { Wallet, Transaction } from '../constants/types';
 import AddTransactionModal from './addTransactionModal';
@@ -19,6 +19,7 @@ const formatRupiah = (number: number) => {
 }
 
 export default function Index() {
+  const router = useRouter();
   const [selectedWalletId, setSelectedWalletId] = useState<number>(0);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [isWalletModalVisible, setWalletModalVisible] = useState(false);
@@ -72,7 +73,14 @@ export default function Index() {
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.walletListContainer}>
             {wallets.map((wallet) => (
-              <View key={wallet.id} style={styles.walletCard}>
+              <TouchableOpacity 
+                key={wallet.id} 
+                style={styles.walletCard}
+                onPress={() => router.push({
+                  pathname: '/statistic',
+                  params: { walletId: wallet.id, walletName: wallet.name }
+                })}
+              >
                 <View style={styles.cardHeader}>
                   <Text style={styles.walletName}>{wallet.name}</Text>
                   <TouchableOpacity style={styles.deleteButton} onPress={() => {
@@ -86,7 +94,7 @@ export default function Index() {
                 </View>
                 <Text style={styles.walletType}>{wallet.type}</Text>
                 <Text style={styles.walletBalance}>{formatRupiah(wallet.balance)}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>

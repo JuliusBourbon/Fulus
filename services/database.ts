@@ -200,6 +200,7 @@ export const addWallet = (name: string, type: string, initialBalance: number = 0
     }
 };
 
+// Funcion query hapus Wallet
 export const deleteWallet = (id: number) => {
     try {
         db.execSync(`DELETE FROM wallets WHERE id = ${id}`);
@@ -207,6 +208,29 @@ export const deleteWallet = (id: number) => {
         return true;
     } catch (error) {
         return false;
+    }
+};
+
+// Function query Top Spend
+export const getExpenseStats = (walletId?: number) => {
+    try {
+        let query = `
+            SELECT c.name as category_name, c.color, SUM(t.amount) as total_amount 
+            FROM transactions t 
+            JOIN categories c ON t.category_id = c.id 
+            WHERE t.type = 'EXPENSE'
+        `;
+        
+        if (walletId) {
+            query += ` AND t.wallet_id = ${walletId}`;
+        }
+        
+        query += ` GROUP BY c.id ORDER BY total_amount DESC`;
+        
+        return db.getAllSync(query);
+    } catch (error) {
+        console.error('Error getting stats:', error);
+        return [];
     }
 };
 
