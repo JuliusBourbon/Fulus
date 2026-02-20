@@ -1,4 +1,5 @@
-import { Modal, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { Modal, View, TouchableOpacity, StyleSheet } from "react-native";
+import Text from '../components/CustomText'
 import React, { useState } from "react";
 import { deleteWallet } from "@/services/database";
 

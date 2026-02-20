@@ -1,8 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { 
-  Text, View, StyleSheet, ScrollView, RefreshControl, Dimensions, 
-  TouchableOpacity
-} from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import Text from '../components/CustomText'
 import { useFocusEffect, useRouter } from 'expo-router';
 import { getWallets, getTotalBalance, getRecentTransactions, getTopGoals, getOnboardingStatus, getUserProfile } from '../services/database';
 import { Wallet, Transaction, Goal } from '../constants/types';

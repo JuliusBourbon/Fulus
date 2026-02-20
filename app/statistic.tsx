@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import Text from '../components/CustomText'
 import { useRouter, useLocalSearchParams, useFocusEffect } from 'expo-router';
 import { getExpenseStats } from '../services/database';
 

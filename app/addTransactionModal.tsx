@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { 
-    Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView 
-} from 'react-native';
+import { Modal, View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import Text from '../components/CustomText'
 import { getCategories, getWallets, addTransaction } from '../services/database';
 import { Wallet } from '../constants/types';
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { 
-    Modal, View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView 
-} from 'react-native';
+import { Modal, View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import Text from '../components/CustomText'
 import { addWallet } from '../services/database';
 
 interface Props {

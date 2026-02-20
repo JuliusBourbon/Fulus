@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import Text from '../components/CustomText'
 import { useRouter } from 'expo-router';
 import { completeOnboarding } from '../services/database';
 import { createAvatar } from '@dicebear/core';

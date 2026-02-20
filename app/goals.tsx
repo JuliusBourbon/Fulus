@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
+import Text from '../components/CustomText'
 import {  useFocusEffect } from 'expo-router';
 import { getGoals, addGoal, getWallets, addSavingsToGoal } from '../services/database';
 import { Goal, Wallet } from '../constants/types';

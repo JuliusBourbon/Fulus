@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import Text from '../components/CustomText'
 import { useRouter } from 'expo-router';
 import { resetDatabase, initDatabase } from '../services/database';
 
