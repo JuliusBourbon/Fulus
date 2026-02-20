@@ -36,10 +36,10 @@ export default function RootLayout() {
         <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }}/>
             <Stack.Screen name="onboarding" options={{ headerShown: false }}/>
-            <Stack.Screen name="transactions" />
-            <Stack.Screen name="goals" />
-            <Stack.Screen name="statistic" />
-            <Stack.Screen name="settings" />
+            <Stack.Screen name="Transactions" />
+            <Stack.Screen name="Goals" />
+            <Stack.Screen name="Statistic" />
+            <Stack.Screen name="Settings" />
         </Stack>
     );
 }

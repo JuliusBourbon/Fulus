@@ -29,10 +29,7 @@ export default function OnboardingScreen() {
     };
 
     return (
-        <KeyboardAvoidingView 
-            style={styles.container} 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        >
+        <ScrollView style={styles.container}>
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={styles.content}>
                     <Text style={styles.title}>Selamat Datang di Fulus</Text>
@@ -52,7 +49,7 @@ export default function OnboardingScreen() {
                         <Text style={styles.label}>Pilih Avatar</Text>
                         <View style={{ alignItems: 'center' }}>
                             <View style={styles.iconContainer}>
-                                <SvgXml xml={getAvatarSvg(selecetedAvatar)} width={100} height={100} />
+                                <SvgXml xml={getAvatarSvg(selecetedAvatar)} width={80} height={80} />
                             </View>
                         </View>
                         <View style={styles.avatarGrid}>
@@ -71,23 +68,23 @@ export default function OnboardingScreen() {
 
                 <View style={styles.bottomContainer}>
                     <TouchableOpacity style={styles.startBtn} onPress={handleStart} activeOpacity={0.8}>
-                        <Text style={styles.startBtnText}>Mulai Kelola Uang</Text>
+                        <Text style={styles.startBtnText}>Mulai</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-        </KeyboardAvoidingView>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#05B084' },
     
-    content: { flex: 1, alignItems: 'center', marginTop: 50, paddingHorizontal: 40 },
-    iconContainer: { width: 100, height: 100, backgroundColor: 'white', borderRadius: 60, justifyContent: 'center', alignItems: 'center', shadowColor: "#000", shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.15, shadowRadius: 20, elevation: 10, marginBottom: 24 },
+    content: { flex: 1, alignItems: 'center', marginTop: 90, paddingHorizontal: 40 },
+    iconContainer: { width: 80, height: 80, backgroundColor: 'white', borderRadius: 60, justifyContent: 'center', alignItems: 'center', shadowColor: "#000", shadowOffset: { width: 0, height: 10 }, shadowOpacity: 0.15, shadowRadius: 20, elevation: 10, marginBottom: 24 },
     iconText: { fontSize: 60 },
     
-    title: { fontSize: 32, fontWeight: 'bold', color: '#F1EDEA', marginBottom: 10, textAlign: 'center' },
-    subtitle: { fontSize: 20, fontWeight: 'semibold', color: '#F1EDEA', textAlign: 'center', marginBottom: 40 },
+    title: { fontSize: 28, fontWeight: 'bold', color: '#F1EDEA', marginBottom: 10, textAlign: 'center' },
+    subtitle: { fontSize: 18, fontWeight: 'semibold', color: '#F1EDEA', textAlign: 'center', marginBottom: 40 },
 
     inputContainer: { width: '100%', marginBottom: 20 },
     label: { fontSize: 18, fontWeight: 'bold', color: '#F1EDEA', marginBottom: 8 },
@@ -97,7 +94,7 @@ const styles = StyleSheet.create({
     avatarBtn: { width: 56, height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', borderWidth: 3, borderColor: 'transparent' },
     avatarBtnActive: { backgroundColor: '#ECFDF5', borderColor: '#10B981' },
 
-    bottomContainer: { padding: 24, paddingBottom: 40 },
-    startBtn: { backgroundColor: 'white', paddingVertical: 18, borderRadius: 16, alignItems: 'center', shadowColor: "#10B981", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 5 },
+    bottomContainer: { paddingHorizontal: 32 },
+    startBtn: { backgroundColor: 'white', paddingVertical: 12, borderRadius: 16, alignItems: 'center', shadowColor: "#10B981", shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 5 },
     startBtnText: { color: '#05B084', fontSize: 18, fontWeight: 'bold' }
 });

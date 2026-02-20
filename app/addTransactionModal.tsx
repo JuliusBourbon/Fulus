@@ -175,7 +175,7 @@ export default function AddTransactionModal({ visible, onClose, onSuccess }: Pro
                     />
 
                     <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-                        <Text style={styles.saveBtnText}>SIMPAN</Text>
+                        <Text style={styles.saveBtnText}>Simpan</Text>
                     </TouchableOpacity>
                 </View>
             </View>

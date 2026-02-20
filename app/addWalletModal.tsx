@@ -83,7 +83,7 @@ export default function AddWalletModal({ visible, onClose, onSuccess }: Props) {
                     </View>
 
                     <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-                        <Text style={styles.saveBtnText}>SIMPAN DOMPET</Text>
+                        <Text style={styles.saveBtnText}>Simpan</Text>
                     </TouchableOpacity>
                 </View>
             </View>

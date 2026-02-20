@@ -47,8 +47,8 @@ export default function GoalsScreen() {
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Tujuan Finansial</Text>
-                <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.addBtn}>
-                    <Text style={styles.addBtnText}>+ Baru</Text>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <Text style={styles.addBtnText}>+ Tujuan</Text>
                 </TouchableOpacity>
             </View>
 
@@ -129,10 +129,9 @@ const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#F3F4F6' },
     header: { paddingTop: 50, paddingBottom: 20, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
     backBtn: { padding: 8 },
-    backText: { color: '#10B981', fontWeight: 'bold', fontSize: 16 },
-    title: { color: '#10B981', fontSize: 20, fontWeight: 'bold' },
-    addBtn: { backgroundColor: '#10B981', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },
-    addBtnText: { color: 'white', fontWeight: 'bold' },
+    backText: { color: '#05B084', fontWeight: 'bold', fontSize: 16 },
+    title: { color: 'Black', fontSize: 20, fontWeight: 'bold' },
+    addBtnText: { color: '#05B084', fontWeight: 'bold' },
     
     content: { padding: 24 },
     emptyState: { textAlign: 'center', color: '#9CA3AF', marginTop: 40 },
@@ -144,9 +143,9 @@ const styles = StyleSheet.create({
     
     // Progress Bar
     progressBarContainer: { height: 12, backgroundColor: '#E5E7EB', borderRadius: 6, overflow: 'hidden', marginBottom: 8 },
-    progressBarFill: { height: '100%', backgroundColor: '#10B981' },
+    progressBarFill: { height: '100%', backgroundColor: '#05B084' },
     progressTextContainer: { flexDirection: 'row', justifyContent: 'space-between' },
-    progressTextL: { fontSize: 12, color: '#10B981', fontWeight: 'bold' },
+    progressTextL: { fontSize: 12, color: '#05B084', fontWeight: 'bold' },
     progressTextR: { fontSize: 12, color: '#6B7280', fontWeight: 'bold' },
 
     // Modal Styles
@@ -157,11 +156,11 @@ const styles = StyleSheet.create({
     input: { backgroundColor: '#F3F4F6', padding: 12, borderRadius: 12, fontSize: 16, marginBottom: 16 },
     btnRow: { flexDirection: 'row', justifyContent: 'flex-end', gap: 12, marginTop: 10 },
     cancelBtn: { backgroundColor: '#E5E7EB', padding: 12, borderRadius: 12, paddingHorizontal: 20 },
-    saveBtn: { backgroundColor: '#10B981', padding: 12, borderRadius: 12, paddingHorizontal: 20 },
+    saveBtn: { backgroundColor: '#05B084', padding: 12, borderRadius: 12, paddingHorizontal: 20 },
 
     // Save styles
-    nabungBtn: { backgroundColor: '#ECFDF5', padding: 12, borderRadius: 12, alignItems: 'center', marginTop: 16, borderWidth: 1, borderColor: '#10B981' },
-    nabungBtnText: { color: '#10B981', fontWeight: 'bold' },
+    nabungBtn: { backgroundColor: '#ECFDF5', padding: 12, borderRadius: 12, alignItems: 'center', marginTop: 16, borderWidth: 1, borderColor: '#05B084' },
+    nabungBtnText: { color: '#05B084', fontWeight: 'bold' },
     chip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F3F4F6', marginRight: 8, borderWidth: 1, borderColor: '#E5E7EB', height: 40, justifyContent: 'center' },
-    chipActive: { backgroundColor: '#10B981', borderColor: '#10B981' },
+    chipActive: { backgroundColor: '#05B084', borderColor: '#10B981' },
 });

@@ -96,13 +96,13 @@ export default function Index() {
                 <Text style={styles.greeting}>Halo, {userName}</Text>
               </View>
             </View>
-            <Text style={styles.labelTotal}>Total Saldo Kamu</Text>
+            <Text style={styles.labelTotal}>Total Kekayaan</Text>
             <Text style={styles.totalAmount}>{formatRupiah(totalBalance)}</Text>
           </View>
           
           {/* Tombol Settings (Ikon Gear) */}
           <TouchableOpacity 
-            onPress={() => router.push('/settings')} 
+            onPress={() => router.push('/Settings')} 
             style={styles.settingsBtn}
           >
             <SvgXml xml={gearIconSvg} width={24} height={24} />
@@ -113,52 +113,68 @@ export default function Index() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Dompet</Text>
-              <TouchableOpacity onPress={() => setWalletModalVisible(true)}>
-                <Text style={{color: '#05B084', fontWeight: 'bold'}}>+ Tambah</Text>
-              </TouchableOpacity>
+            <TouchableOpacity onPress={() => setWalletModalVisible(true)}>
+              <Text style={{color: '#05B084', fontWeight: 'bold'}}>+ Tambah</Text>
+            </TouchableOpacity>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.walletListContainer}>
-            {wallets.map((wallet) => (
-              <TouchableOpacity 
-                key={wallet.id} 
-                style={styles.walletCard}
-                onPress={() => router.push({
-                  pathname: '/statistic',
-                  params: { walletId: wallet.id, walletName: wallet.name }
-                })}
-              >
-                <View style={styles.cardHeader}>
-                  <Text style={styles.walletName}>{wallet.name}</Text>
-                  <TouchableOpacity style={styles.deleteButton} onPress={() => {
-                      setSelectedWalletId(wallet.id); 
-                      setDeleteModalVisible(true);
-                    }}
-                    activeOpacity={0.8}  
-                  >
-                    <Text style={{color: 'white', fontWeight: 'bold'}}>- Hapus</Text>
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.walletType}>{wallet.type}</Text>
-                <Text style={styles.walletBalance}>{formatRupiah(wallet.balance)}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+
+          {wallets.length === 0 ? (
+            <TouchableOpacity onPress={() => setWalletModalVisible(true)} style={styles.emptyGoalBtn}>
+              <Text>Belum ada Wallet</Text>
+            </TouchableOpacity>
+          ) : (
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              contentContainerStyle={styles.walletListContainer}
+            >
+              {wallets.map((wallet) => (
+                <TouchableOpacity 
+                  key={wallet.id} 
+                  style={styles.walletCard}
+                  onPress={() => router.push({
+                    pathname: '/Statistic',
+                    params: { walletId: wallet.id, walletName: wallet.name }
+                  })}
+                  activeOpacity={0.6}
+                >
+                  <View style={styles.cardHeader}>
+                    <Text style={styles.walletName}>{wallet.name}</Text>
+                    <TouchableOpacity 
+                      style={styles.deleteButton} 
+                      onPress={() => {
+                        setSelectedWalletId(wallet.id); 
+                        setDeleteModalVisible(true);
+                      }}
+                      activeOpacity={0.6}  
+                    >
+                      <Text style={{color: 'white', fontWeight: 'bold'}}>- Hapus</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={styles.walletType}>{wallet.type}</Text>
+                  <Text style={styles.walletBalance}>{formatRupiah(wallet.balance)}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
         </View>
 
         {/* Current Activity */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Aktivitas Terakhir</Text>
-            <TouchableOpacity onPress={() => setTrxModalVisible(true)} style={styles.addButton}>
-              <Text style={{ color: 'white', fontWeight: 'bold' }}>+</Text>
+            <TouchableOpacity onPress={() => setTrxModalVisible(true)}>
+              <Text style={{ color: '#05B084', fontWeight: 'bold' }}>+ Tambah</Text>
             </TouchableOpacity>
           </View>
 
           {recentTrx.length === 0 ? (
-            <Text style={styles.emptyState}>Belum ada transaksi</Text>
+            <TouchableOpacity onPress={() => router.push('/Transaction')} style={styles.emptyGoalBtn}>
+              <Text>Belum ada transaksi</Text>
+            </TouchableOpacity>
           ) : (
             recentTrx.map((trx) => (
-              <TouchableOpacity onPress={() => router.push('/transaction')} key={trx.id} style={styles.trxItem}>
+              <TouchableOpacity onPress={() => router.push('/Transaction')} key={trx.id} style={styles.trxItem}>
                 <View style={[styles.trxIcon, {backgroundColor: trx.category_color || '#ccc'}]} />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.trxCategory}>{trx.category_name || 'Transfer'}</Text>
@@ -174,18 +190,18 @@ export default function Index() {
         <View style={[styles.section, { marginBottom: 40 }]}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Tujuan Finansial</Text>
-            <TouchableOpacity onPress={() => router.push('/goals')}>
-              <Text style={{color: '#10B981', fontWeight: 'bold'}}>Lihat Semua →</Text>
+            <TouchableOpacity onPress={() => router.push('/Goals')}>
+              <Text style={{color: '#10B981', fontWeight: 'bold'}}>Lihat Semua</Text>
             </TouchableOpacity>
           </View>
           
           {goals.length === 0 ? (
             <TouchableOpacity 
               style={styles.emptyGoalBtn}
-              onPress={() => router.push('/goals')}
-              activeOpacity={0.7}
+              onPress={() => router.push('/Goals')}
+              activeOpacity={0.6}
             >
-              <Text style={{color: '#6B7280'}}>Belum ada tujuan. Tambah sekarang!</Text>
+              <Text>Belum ada tujuan</Text>
             </TouchableOpacity>
           ) : (
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.goalListContainer}>
@@ -196,8 +212,8 @@ export default function Index() {
                   <TouchableOpacity 
                     key={goal.id} 
                     style={styles.goalCardHome}
-                    onPress={() => router.push('/goals')}
-                    activeOpacity={0.8}
+                    onPress={() => router.push('/Goals')}
+                    activeOpacity={0.6}
                   >
                     <Text style={styles.goalNameHome}>{goal.name}</Text>
                     <Text style={styles.goalAmountHome}>{formatRupiah(goal.target_amount)}</Text>
@@ -270,9 +286,9 @@ const styles = StyleSheet.create({
   totalAmount: { fontSize: 32, fontWeight: 'bold', color: 'white', marginTop: 4 },
 
   // Section
-  section: { marginTop: 24, paddingHorizontal: 24, },
-  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#161D1C', marginBottom: 12 },
+  section: { marginTop: 24, paddingHorizontal: 24 },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#161D1C' },
 
   // Wallet Card Styles
   walletListContainer: {
@@ -284,7 +300,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#05B084', 
     padding: 16, 
     borderRadius: 16, 
-    width: 290, 
+    width: 300, 
     marginRight: 12,
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3
   },
@@ -300,18 +316,17 @@ const styles = StyleSheet.create({
   trxNote: { fontSize: 12, color: '#9CA3AF' },
   trxAmount: { fontWeight: 'bold' },
 
-  addButton: { width: 30, height: 30, backgroundColor: '#05B084', borderRadius: 15, alignItems: 'center', justifyContent: 'center' },
   deleteButton: {borderRadius: 15, alignItems: 'center', justifyContent: 'center'},
   emptyState: { textAlign: 'center', color: '#9CA3AF', marginTop: 20, fontStyle: 'italic' },
 
   // Goals Styles
   emptyGoalBtn: { backgroundColor: 'white', padding: 16, borderRadius: 16, alignItems: 'center', borderWidth: 1, borderColor: '#E5E7EB', borderStyle: 'dashed' },
-  goalListContainer: { paddingHorizontal: 24, paddingBottom: 10 },
+  goalListContainer: { paddingBottom: 10, alignItems: 'center', flexGrow: 1, justifyContent: 'center'  },
   goalCardHome: { 
     backgroundColor: '#05B084',
     padding: 16, 
     borderRadius: 16, 
-    width: 240,
+    width: 300,
     marginRight: 12,
     shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3
   },
