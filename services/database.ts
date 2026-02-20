@@ -269,7 +269,7 @@ export const deleteWallet = (id: number) => {
 };
 
 // Function query Top Spend
-export const getExpenseStats = (walletId?: number) => {
+export const getExpenseStats = (walletId?: number, startDate?: string, endDate?: string) => {
     try {
         let query = `
             SELECT c.name as category_name, c.color, SUM(t.amount) as total_amount 
@@ -280,6 +280,10 @@ export const getExpenseStats = (walletId?: number) => {
         
         if (walletId) {
             query += ` AND t.wallet_id = ${walletId}`;
+        }
+        
+        if (startDate && endDate) {
+            query += ` AND t.date >= '${startDate}' AND t.date <= '${endDate}'`;
         }
         
         query += ` GROUP BY c.id ORDER BY total_amount DESC`;
