@@ -112,7 +112,7 @@ export default function Index() {
         {/* Wallet */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Dompet Saya</Text>
+            <Text style={styles.sectionTitle}>Dompet</Text>
               <TouchableOpacity onPress={() => setWalletModalVisible(true)}>
                 <Text style={{color: '#05B084', fontWeight: 'bold'}}>+ Tambah</Text>
               </TouchableOpacity>
@@ -158,7 +158,7 @@ export default function Index() {
             <Text style={styles.emptyState}>Belum ada transaksi</Text>
           ) : (
             recentTrx.map((trx) => (
-              <View key={trx.id} style={styles.trxItem}>
+              <TouchableOpacity onPress={() => router.push('/transaction')} key={trx.id} style={styles.trxItem}>
                 <View style={[styles.trxIcon, {backgroundColor: trx.category_color || '#ccc'}]} />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.trxCategory}>{trx.category_name || 'Transfer'}</Text>
@@ -167,7 +167,7 @@ export default function Index() {
                 <Text style={[styles.trxAmount, {color: trx.type === 'EXPENSE' ? '#EF4444' : '#10B981'}]}>
                   {trx.type === 'EXPENSE' ? '-' : '+'} {formatRupiah(trx.amount)}
                 </Text>
-              </View>
+              </TouchableOpacity>
             ))
           )}
         </View>

@@ -163,6 +163,29 @@ export const getTotalBalance = (): number => {
     }
 };
 
+export const getFilteredTransactions = (startDate?: string, endDate?: string) => {
+    try {
+        let query = `
+            SELECT t.*, c.name as category_name, c.icon as category_icon, c.color as category_color, w.name as wallet_name
+            FROM transactions t
+            LEFT JOIN categories c ON t.category_id = c.id
+            LEFT JOIN wallets w ON t.wallet_id = w.id
+            WHERE 1=1
+        `;
+
+        if (startDate && endDate) {
+            query += ` AND t.date >= '${startDate}' AND t.date <= '${endDate}'`;
+        }
+
+        query += ` ORDER BY t.date DESC`;
+        
+        return db.getAllSync<any>(query);
+    } catch (error) {
+        console.error('Error getting filtered transactions:', error);
+        return [];
+    }
+};
+
 // Ambil Transaksi Terakhir
 export const getRecentTransactions = (): Transaction[] => {
     try {
