@@ -291,6 +291,36 @@ export const deleteWallet = (id: number) => {
     }
 };
 
+// Funcion query hapus Goals
+export const deleteGoal = (goalId: number, refundWalletId?: number) => {
+    try {
+        // 1. Ambil data goal untuk mengecek apakah ada uang yang harus dikembalikan
+        const goal = db.getFirstSync<{name: string, saved_amount: number}>(
+            `SELECT name, saved_amount FROM goals WHERE id = ${goalId}`
+        );
+
+        // 2. Jika ada uang yang terkumpul, dan dompet tujuan dipilih
+        if (goal && goal.saved_amount > 0 && refundWalletId) {
+            // Kembalikan uang ke dompet
+            db.execSync(`UPDATE wallets SET balance = balance + ${goal.saved_amount} WHERE id = ${refundWalletId}`);
+
+            // Catat sebagai Pemasukan (INCOME) agar riwayatnya jelas
+            const date = new Date().toISOString();
+            db.execSync(`
+                INSERT INTO transactions (wallet_id, category_id, amount, date, type, note)
+                VALUES (${refundWalletId}, NULL, ${goal.saved_amount}, '${date}', 'INCOME', 'Pencairan Tabungan: ${goal.name}')
+            `);
+        }
+
+        // 3. Setelah uang aman, baru hapus tujuannya
+        db.execSync(`DELETE FROM goals WHERE id = ${goalId}`);
+        return true;
+    } catch (error) {
+        console.error('Error deleting goal:', error);
+        return false;
+    }
+};
+
 // Function query Top Spend
 export const getExpenseStats = (walletId?: number, startDate?: string, endDate?: string) => {
     try {
