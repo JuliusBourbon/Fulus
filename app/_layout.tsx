@@ -36,10 +36,10 @@ export default function RootLayout() {
         <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }}/>
             <Stack.Screen name="onboarding" options={{ headerShown: false }}/>
-            <Stack.Screen name="Transaction" />
-            <Stack.Screen name="Goals" />
-            <Stack.Screen name="Statistic" />
-            <Stack.Screen name="Settings" />
+            <Stack.Screen name="Transaction"  options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Transaksi' }}/>
+            <Stack.Screen name="Goals"  options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Tujuan' }}/>
+            <Stack.Screen name="Statistic" options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Statistik' }}/>
+            <Stack.Screen name="Settings"  options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Settings' }}/>
         </Stack>
     );
 }
