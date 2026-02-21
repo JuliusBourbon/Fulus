@@ -21,7 +21,6 @@ const formatDate = (date: Date) => {
 };
 
 export default function StatisticScreen() {
-    const router = useRouter();
     const { walletId, walletName } = useLocalSearchParams(); 
     
     const [stats, setStats] = useState<any[]>([]);
@@ -85,6 +84,9 @@ export default function StatisticScreen() {
     return (
         <View style={styles.container}>
             <ScrollView style={styles.content}>
+                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                    <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold' }}>{walletName}</Text>
+                </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContainer}>
                 {['ALL', 'THIS_MONTH', 'LAST_MONTH', 'CUSTOM'].map((tab) => {
                     const labels: any = { ALL: 'Semua', THIS_MONTH: 'Bulan Ini', LAST_MONTH: 'Bulan Lalu', CUSTOM: 'Kustom' };
