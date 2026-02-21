@@ -360,6 +360,6 @@ const styles = StyleSheet.create({
   goalAmountHome: { color: 'white', fontSize: 18, fontWeight: 'bold', marginBottom: 12 },
   
   progressBarContainerHome: { height: 8, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 4, overflow: 'hidden', marginBottom: 6 },
-  progressBarFillHome: { height: '100%', backgroundColor: '#34D399' },
+  progressBarFillHome: { height: '100%', backgroundColor: 'white' },
   progressTextHome: { color: 'white', fontSize: 10, textAlign: 'right', fontWeight: 'bold' }
 });
