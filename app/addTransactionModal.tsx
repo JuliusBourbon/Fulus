@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { Modal, View, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import Text from '../components/CustomText'
 import { getCategories, getWallets, addTransaction } from '../services/database';
 import { Wallet } from '../constants/types';
@@ -72,7 +72,7 @@ export default function AddTransactionModal({ visible, onClose, onSuccess }: Pro
 
     return (
         <Modal visible={visible} animationType="slide" transparent={true}>
-            <View style={styles.modalOverlay}>
+            <KeyboardAvoidingView style={styles.modalOverlay} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
                 <View style={styles.modalContent}>
                     {/* Header */}
                     <View style={styles.header}>
@@ -82,103 +82,105 @@ export default function AddTransactionModal({ visible, onClose, onSuccess }: Pro
                         </TouchableOpacity>
                     </View>
 
-                    {/* Income/Expense */}
-                    <View style={styles.switchContainer}>
-                        <TouchableOpacity 
-                            style={[styles.switchBtn, type === 'EXPENSE' && styles.activeExpense]}
-                            onPress={() => setType('EXPENSE')}
-                        >
-                            <Text style={[styles.switchText, type === 'EXPENSE' && {color:'white'}]}>Keluar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={[styles.switchBtn, type === 'INCOME' && styles.activeIncome]}
-                            onPress={() => setType('INCOME')}
-                        >
-                            <Text style={[styles.switchText, type === 'INCOME' && {color:'white'}]}>Masuk</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                            style={[styles.switchBtn, type === 'TRANSFER' && {backgroundColor: '#3B82F6'}]} // Warna biru untuk transfer
-                            onPress={() => setType('TRANSFER')}
-                        >
-                            <Text style={[styles.switchText, type === 'TRANSFER' && {color:'white'}]}>Transfer</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {/* Input Nominal */}
-                    <Text style={styles.label}>Nominal</Text>
-                    <TextInput 
-                        style={styles.inputBig} 
-                        keyboardType="numeric"
-                        placeholder="Rp 0"
-                        value={amount}
-                        onChangeText={setAmount}
-                    />
-
-                    {/* Categories (Selain Transfer)*/}
-                    {type !== 'TRANSFER' && (
-                        <View>
-                            <Text style={styles.label}>Kategori</Text>
-                            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 16}}>
-                                {categories.filter(c => c.type === type).map(cat => (
-                                <TouchableOpacity 
-                                    key={cat.id} 
-                                    style={[styles.chip, selectedCategory === cat.id && styles.chipActive]}
-                                    onPress={() => setSelectedCategory(cat.id)}
-                                >
-                                    <Text style={selectedCategory === cat.id ? {color:'white'} : {color:'#333'}}>{cat.name}</Text>
-                                </TouchableOpacity>
-                                ))}
-                            </ScrollView>
-                        </View>
-                    )}
-
-                    {/* Pilihan Sumber Wallet */}
-                    <View>
-                        <Text style={styles.label}>{type === 'TRANSFER' ? 'Dari Dompet:' : 'Dompet Sumber'}</Text>
-                        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 16}}>
-                            {wallets.map(w => (
+                    <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" contentContainerStyle={{ paddingBottom: 20 }}>
+                        {/* Income/Expense */}
+                        <View style={styles.switchContainer}>
                             <TouchableOpacity 
-                                key={w.id} 
-                                style={[styles.chip, selectedWallet === w.id && styles.chipActive]}
-                                onPress={() => setSelectedWallet(w.id)}
+                                style={[styles.switchBtn, type === 'EXPENSE' && styles.activeExpense]}
+                                onPress={() => setType('EXPENSE')}
                             >
-                                <Text style={selectedWallet === w.id ? {color:'white'} : {color:'#333'}}>{w.name}</Text>
+                                <Text style={[styles.switchText, type === 'EXPENSE' && {color:'white'}]}>Keluar</Text>
                             </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                    </View>
+                            <TouchableOpacity 
+                                style={[styles.switchBtn, type === 'INCOME' && styles.activeIncome]}
+                                onPress={() => setType('INCOME')}
+                            >
+                                <Text style={[styles.switchText, type === 'INCOME' && {color:'white'}]}>Masuk</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                                style={[styles.switchBtn, type === 'TRANSFER' && {backgroundColor: '#3B82F6'}]} // Warna biru untuk transfer
+                                onPress={() => setType('TRANSFER')}
+                            >
+                                <Text style={[styles.switchText, type === 'TRANSFER' && {color:'white'}]}>Transfer</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                    {/* Tujuan Wallet (Ketika Transfer) */}
-                    {type === 'TRANSFER' && (
+                        {/* Input Nominal */}
+                        <Text style={styles.label}>Nominal</Text>
+                        <TextInput 
+                            style={styles.inputBig} 
+                            keyboardType="numeric"
+                            placeholder="Rp 0"
+                            value={amount}
+                            onChangeText={setAmount}
+                        />
+
+                        {/* Categories (Selain Transfer)*/}
+                        {type !== 'TRANSFER' && (
+                            <View>
+                                <Text style={styles.label}>Kategori</Text>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 16}}>
+                                    {categories.filter(c => c.type === type).map(cat => (
+                                    <TouchableOpacity 
+                                        key={cat.id} 
+                                        style={[styles.chip, selectedCategory === cat.id && styles.chipActive]}
+                                        onPress={() => setSelectedCategory(cat.id)}
+                                    >
+                                        <Text style={selectedCategory === cat.id ? {color:'white'} : {color:'#333'}}>{cat.name}</Text>
+                                    </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )}
+
+                        {/* Pilihan Sumber Wallet */}
                         <View>
-                            <Text style={styles.label}>Ke Dompet:</Text>
+                            <Text style={styles.label}>{type === 'TRANSFER' ? 'Dari Dompet:' : 'Dompet Sumber'}</Text>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 16}}>
                                 {wallets.map(w => (
                                 <TouchableOpacity 
                                     key={w.id} 
-                                    style={[styles.chip, targetWallet === w.id && {backgroundColor: '#3B82F6', borderColor: '#3B82F6'}]}
-                                    onPress={() => setTargetWallet(w.id)}
+                                    style={[styles.chip, selectedWallet === w.id && styles.chipActive]}
+                                    onPress={() => setSelectedWallet(w.id)}
                                 >
-                                    <Text style={targetWallet === w.id ? {color:'white'} : {color:'#333'}}>{w.name}</Text>
+                                    <Text style={selectedWallet === w.id ? {color:'white'} : {color:'#333'}}>{w.name}</Text>
                                 </TouchableOpacity>
                                 ))}
                             </ScrollView>
                         </View>
-                    )}
 
-                    {/* Catatan */}
-                    <TextInput 
-                        style={styles.inputNote} 
-                        placeholder="Catatan (Opsional)"
-                        value={note}
-                        onChangeText={setNote}
-                    />
+                        {/* Tujuan Wallet (Ketika Transfer) */}
+                        {type === 'TRANSFER' && (
+                            <View>
+                                <Text style={styles.label}>Ke Dompet:</Text>
+                                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{marginBottom: 16}}>
+                                    {wallets.map(w => (
+                                    <TouchableOpacity 
+                                        key={w.id} 
+                                        style={[styles.chip, targetWallet === w.id && {backgroundColor: '#3B82F6', borderColor: '#3B82F6'}]}
+                                        onPress={() => setTargetWallet(w.id)}
+                                    >
+                                        <Text style={targetWallet === w.id ? {color:'white'} : {color:'#333'}}>{w.name}</Text>
+                                    </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            </View>
+                        )}
 
-                    <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
-                        <Text style={styles.saveBtnText}>Simpan</Text>
-                    </TouchableOpacity>
+                        {/* Catatan */}
+                        <TextInput 
+                            style={styles.inputNote} 
+                            placeholder="Catatan (Opsional)"
+                            value={note}
+                            onChangeText={setNote}
+                        />
+
+                        <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
+                            <Text style={styles.saveBtnText}>Simpan</Text>
+                        </TouchableOpacity>
+                    </ScrollView>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         </Modal>
     );
 }
