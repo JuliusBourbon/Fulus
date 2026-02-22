@@ -30,6 +30,13 @@ export default function AddSavingsModal({ visible, onClose, onSuccess, goal, wal
         }
 
         const cleanAmount = parseInt(amount.replace(/[^0-9]/g, ''), 10);
+
+        const walletData = wallets.find(w => w.id === selectedWalletId);
+        if (walletData && cleanAmount > walletData.balance) {
+            const sisaSaldo = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(walletData.balance);
+            alert(`Saldo ${walletData.name} tidak mencukupi untuk menabung!\nSisa saldo: ${sisaSaldo}`);
+            return;
+        }
         
         const success = addSavingsToGoal(goal.id, selectedWalletId, cleanAmount, goal.name);
         

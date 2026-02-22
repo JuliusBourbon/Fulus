@@ -51,9 +51,19 @@ export default function AddTransactionModal({ visible, onClose, onSuccess }: Pro
             return;
         }
 
+        
         const cleanAmount = parseInt(amount.replace(/[^0-9]/g, ''), 10);
+        
+        if (type === 'EXPENSE' || type === 'TRANSFER') {
+            const walletData = wallets.find(w => w.id === selectedWallet);
+            if (walletData && cleanAmount > walletData.balance) {
+                const sisaSaldo = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(walletData.balance);
+                alert(`Saldo ${walletData.name} tidak mencukupi!\nSisa saldo: ${sisaSaldo}`);
+                return; 
+            }
+        }
+        
         const date = new Date().toISOString();
-
         const success = addTransaction(
             selectedWallet, 
             type === 'TRANSFER' ? null : selectedCategory,
