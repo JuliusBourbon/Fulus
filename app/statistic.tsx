@@ -84,7 +84,7 @@ export default function StatisticScreen() {
     return (
         <View style={styles.container}>
             <ScrollView style={styles.content}>
-                <View style={{ alignItems: 'center', marginBottom: 20 }}>
+                <View style={{ alignItems: 'center', marginVertical: 20 }}>
                     <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold' }}>{walletName}</Text>
                 </View>
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContainer}>
@@ -178,9 +178,9 @@ export default function StatisticScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#10B981' },
-    content: { flex: 1, marginTop: 20 },
+    content: { flex: 1 },
     
-    filterContainer: { paddingHorizontal: 20, marginBottom: 16, gap: 8, maxHeight: 35, alignItems: 'center' },
+    filterContainer: { paddingHorizontal: 20, marginVertical: 16, gap: 8, maxHeight: 35, alignItems: 'center' },
     filterBtn: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.2)' },
     filterBtnActive: { backgroundColor: 'white' },
     filterText: { color: 'white', fontSize: 12 },

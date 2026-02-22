@@ -65,22 +65,27 @@ export default function TransactionsScreen() {
 
     return (
         <View style={styles.container}>
-            <ScrollView style={styles.content}>
+            <ScrollView 
+                style={styles.content} 
+                contentContainerStyle={{ flexGrow: 1 }}
+                showsVerticalScrollIndicator={false}
+            >
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterContainer}>
                     {['ALL', 'THIS_MONTH', 'LAST_MONTH', 'CUSTOM'].map((tab) => {
                         const labels: any = { ALL: 'Semua', THIS_MONTH: 'Bulan Ini', LAST_MONTH: 'Bulan Lalu', CUSTOM: 'Kustom' };
                         const isActive = filterPeriod === tab;
                         return (
-                        <TouchableOpacity 
-                            key={tab}
-                            style={[styles.filterBtn, isActive && styles.filterBtnActive]}
-                            onPress={() => setFilterPeriod(tab as any)}
-                        >
-                            <Text style={[styles.filterText, isActive && {color: '#10B981', fontWeight: 'bold'}]}>{labels[tab]}</Text>
-                        </TouchableOpacity>
+                            <TouchableOpacity 
+                                key={tab}
+                                style={[styles.filterBtn, isActive && styles.filterBtnActive]}
+                                onPress={() => setFilterPeriod(tab as any)}
+                            >
+                                <Text style={[styles.filterText, isActive && {color: '#10B981', fontWeight: 'bold'}]}>{labels[tab]}</Text>
+                            </TouchableOpacity>
                         )
                     })}
                 </ScrollView>
+
                 {filterPeriod === 'CUSTOM' && (
                     <View style={styles.customDateContainer}>
                         <TouchableOpacity style={styles.dateBtn} onPress={() => setShowPicker('start')}>
@@ -106,18 +111,17 @@ export default function TransactionsScreen() {
                 )}
 
                 <View style={styles.card}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        {transactions.length === 0 ? (
-                            <View style={styles.emptyState}>
-                                <Text style={styles.emptyText}>Tidak ada transaksi di periode ini.</Text>
-                            </View>
-                        ) : (
+                    {transactions.length === 0 ? (
+                        <View style={styles.emptyState}>
+                            <Text style={styles.emptyText}>Tidak ada transaksi di periode ini.</Text>
+                        </View>
+                    ) : (
                         transactions.map((trx) => (
                             <View key={trx.id} style={styles.trxItem}>
                                 <View style={[styles.trxIcon, { backgroundColor: trx.category_color || '#ccc' }]} />
                                 <View style={{ flex: 1 }}>
                                     <Text style={styles.trxCategory}>{trx.category_name || (trx.type === 'TRANSFER' ? 'Transfer' : 'Transaksi')}</Text>
-                                    <Text style={styles.trxNote}>{trx.wallet_name}</Text >
+                                    <Text style={styles.trxNote}>{trx.wallet_name}</Text>
                                     <Text style={styles.trxNote}>{trx.note ? `${trx.note}` : ''}</Text>
                                     <Text style={styles.trxDate}>{formatTrxDate(trx.date)}</Text>
                                 </View>
@@ -126,8 +130,7 @@ export default function TransactionsScreen() {
                                 </Text>
                             </View>
                         ))
-                        )}
-                    </ScrollView>
+                    )}
                 </View>
             </ScrollView>
         </View>
@@ -136,9 +139,9 @@ export default function TransactionsScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#10B981' },
-    content: { flex: 1, marginTop: 20 },
+    content: { flex: 1 },
     
-    filterContainer: { paddingHorizontal: 20, marginBottom: 16, gap: 8, maxHeight: 35, alignItems: 'center' },
+    filterContainer: { paddingHorizontal: 20, marginVertical: 16, gap: 8, maxHeight: 35, alignItems: 'center' },
     filterBtn: { paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.2)' },
     filterBtnActive: { backgroundColor: 'white' },
     filterText: { color: 'white', fontSize: 12 },
@@ -148,7 +151,7 @@ const styles = StyleSheet.create({
     dateLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 10, marginBottom: 4 },
     dateValue: { color: 'white', fontWeight: 'bold', fontSize: 12 },
 
-    card: { flex: 1, height: 650, backgroundColor: 'white', borderTopLeftRadius: 32, borderTopRightRadius: 32, padding: 24, shadowColor: "#000", shadowOffset: { width: 0, height: -2 }, shadowOpacity: 0.1, shadowRadius: 10, elevation: 5 },
+    card: { flex: 1, minHeight: '100%', backgroundColor: 'white', borderTopLeftRadius: 32, borderTopRightRadius: 32, padding: 24, shadowColor: "#000", shadowOffset: { width: 0, height: -2 }, shadowOpacity: 0.1, shadowRadius: 10, elevation: 5 },
     
     emptyState: { paddingVertical: 40, alignItems: 'center' },
     emptyText: { color: '#9CA3AF', fontStyle: 'italic' },

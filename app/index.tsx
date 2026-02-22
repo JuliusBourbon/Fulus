@@ -183,8 +183,8 @@ export default function Index() {
                   <Text style={styles.trxCategory}>{trx.category_name || 'Transfer'}</Text>
                   <Text style={styles.trxNote}>{trx.note || trx.wallet_name}</Text>
                 </View>
-                <Text style={[styles.trxAmount, {color: trx.type === 'EXPENSE' ? '#EF4444' : '#10B981'}]}>
-                  {trx.type === 'EXPENSE' ? '-' : '+'} {formatRupiah(trx.amount)}
+                <Text style={[styles.trxAmount, { color: trx.type === 'EXPENSE' ? '#EF4444' : (trx.type === 'INCOME' ? '#10B981' : '#3B82F6') }]}>
+                    {trx.type === 'EXPENSE' ? '-' : (trx.type === 'INCOME' ? '+' : '') } {formatRupiah(trx.amount)}
                 </Text>
               </TouchableOpacity>
             ))
