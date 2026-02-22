@@ -319,10 +319,21 @@ export const deleteGoal = (goalId: number, refundWalletId?: number) => {
 export const getExpenseStats = (walletId?: number, startDate?: string, endDate?: string) => {
     try {
         let query = `
-            SELECT c.name as category_name, c.color, SUM(t.amount) as total_amount 
+            SELECT 
+                CASE 
+                WHEN t.type = 'TRANSFER' THEN 'Transfer'
+                WHEN t.type = 'EXPENSE' AND t.category_id IS NULL THEN 'Menabung'
+                ELSE c.name 
+                END as category_name,
+                CASE 
+                WHEN t.type = 'TRANSFER' THEN '#3B82F6' -- Warna Biru untuk Transfer
+                WHEN t.type = 'EXPENSE' AND t.category_id IS NULL THEN '#8B5CF6' -- Warna Ungu untuk Menabung
+                ELSE c.color 
+                END as color,
+                SUM(t.amount) as total_amount 
             FROM transactions t 
-            JOIN categories c ON t.category_id = c.id 
-            WHERE t.type = 'EXPENSE'
+            LEFT JOIN categories c ON t.category_id = c.id 
+            WHERE t.type IN ('EXPENSE', 'TRANSFER')
         `;
         
         if (walletId) {
@@ -333,9 +344,9 @@ export const getExpenseStats = (walletId?: number, startDate?: string, endDate?:
             query += ` AND t.date >= '${startDate}' AND t.date <= '${endDate}'`;
         }
         
-        query += ` GROUP BY c.id ORDER BY total_amount DESC`;
+        query += ` GROUP BY category_name ORDER BY total_amount DESC`;
         
-        return db.getAllSync(query);
+        return db.getAllSync<any>(query);
     } catch (error) {
         console.error('Error getting stats:', error);
         return [];

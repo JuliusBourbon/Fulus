@@ -14,9 +14,9 @@ export default function AddTransactionModal({ visible, onClose, onSuccess }: Pro
     const [amount, setAmount] = useState('');
     const [note, setNote] = useState('');
     const [type, setType] = useState<'EXPENSE' | 'INCOME' | 'TRANSFER'>('EXPENSE');
-    const [targetWallet, setTargetWallet] = useState<number | null>(null);
-    const [selectedWallet, setSelectedWallet] = useState<number | null>(null);
-    const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+    const [targetWallet, setTargetWallet] = useState<number | null>(1);
+    const [selectedWallet, setSelectedWallet] = useState<number | null>(1);
+    const [selectedCategory, setSelectedCategory] = useState<number | null>(1);
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
 
@@ -62,6 +62,18 @@ export default function AddTransactionModal({ visible, onClose, onSuccess }: Pro
                 return; 
             }
         }
+
+        let finalNote = note;
+        if (type === 'TRANSFER') {
+            const sourceName = wallets.find(w => w.id === selectedWallet)?.name || 'Sumber';
+            const targetName = wallets.find(w => w.id === targetWallet)?.name || 'Tujuan';
+            
+            if (note.trim() === '') {
+                finalNote = `${sourceName} ke ${targetName}`;
+            } else {
+                finalNote = `${sourceName} ke ${targetName} (${note})`;
+            }
+        }
         
         const date = new Date().toISOString();
         const success = addTransaction(
@@ -70,7 +82,7 @@ export default function AddTransactionModal({ visible, onClose, onSuccess }: Pro
             cleanAmount, 
             date, 
             type, 
-            note,
+            finalNote,
             type === 'TRANSFER' ? targetWallet : null
         );
 
