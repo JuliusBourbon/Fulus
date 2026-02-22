@@ -44,7 +44,7 @@ export default function GoalsScreen() {
         }
     };
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.title}>Tujuan Finansial</Text>
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
@@ -52,7 +52,7 @@ export default function GoalsScreen() {
                 </TouchableOpacity>
             </View>
 
-            <ScrollView contentContainerStyle={styles.content}>
+            <View style={styles.content}>
                 {goals.length === 0 ? (
                     <Text style={styles.emptyState}>Belum ada tujuan tabungan.</Text>
                     ) : (
@@ -60,8 +60,11 @@ export default function GoalsScreen() {
                         const progress = Math.min((goal.saved_amount / goal.target_amount) * 100, 100);
                         
                         return (
-                        <View key={goal.id} style={styles.goalCard}>
-                            <Text style={styles.goalName}>{goal.name}</Text>
+                        <View key={goal.id} style={[styles.goalCard, goal.saved_amount === goal.target_amount && styles.goalCardFullfiled]}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Text style={styles.goalName}>{goal.name} </Text>
+                                <Text style={{ color: "#05B084", fontWeight: 'bold', fontSize: 16 }}>{goal.saved_amount === goal.target_amount ? '- Tercapai' : ''}</Text>
+                            </View>
                             <Text style={styles.goalAmount}>{formatRupiah(goal.target_amount)}</Text>
                             
                             <View style={styles.progressBarContainer}>
@@ -87,7 +90,7 @@ export default function GoalsScreen() {
                         );
                     })
                 )}
-            </ScrollView>
+            </View>
 
             <Modal visible={isModalVisible} animationType="slide" transparent={true}>
                 <View style={styles.modalOverlay}>
@@ -121,15 +124,13 @@ export default function GoalsScreen() {
                 loadGoals();
                 }}
             />
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#F3F4F6' },
     header: { paddingTop: 50, paddingBottom: 20, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    backBtn: { padding: 8 },
-    backText: { color: '#05B084', fontWeight: 'bold', fontSize: 16 },
     title: { color: 'Black', fontSize: 20, fontWeight: 'bold' },
     addBtnText: { color: '#05B084', fontWeight: 'bold' },
     
@@ -138,11 +139,12 @@ const styles = StyleSheet.create({
     
     // Card Goal
     goalCard: { backgroundColor: 'white', padding: 20, borderRadius: 16, marginBottom: 16, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },
-    goalName: { fontSize: 16, color: '#6B7280', fontWeight: 'bold', marginBottom: 4 },
+    goalCardFullfiled: { backgroundColor: '#f4fffc', padding: 20, borderRadius: 16, marginBottom: 16, shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3, borderWidth: 2, borderColor: '#05B084' },
+    goalName: { fontSize: 16, color: '#black', fontWeight: 'bold', marginBottom: 4 },
     goalAmount: { fontSize: 24, color: '#1F2937', fontWeight: 'bold', marginBottom: 16 },
     
     // Progress Bar
-    progressBarContainer: { height: 12, backgroundColor: '#E5E7EB', borderRadius: 6, overflow: 'hidden', marginBottom: 8 },
+    progressBarContainer: { height: 12, backgroundColor: '#E5E7EB', borderWidth: 1, borderRadius: 6, overflow: 'hidden', marginBottom: 8 },
     progressBarFill: { height: '100%', backgroundColor: '#05B084' },
     progressTextContainer: { flexDirection: 'row', justifyContent: 'space-between' },
     progressTextL: { fontSize: 12, color: '#05B084', fontWeight: 'bold' },
@@ -162,5 +164,5 @@ const styles = StyleSheet.create({
     nabungBtn: { backgroundColor: '#ECFDF5', padding: 12, borderRadius: 12, alignItems: 'center', marginTop: 16, borderWidth: 1, borderColor: '#05B084' },
     nabungBtnText: { color: '#05B084', fontWeight: 'bold' },
     chip: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: '#F3F4F6', marginRight: 8, borderWidth: 1, borderColor: '#E5E7EB', height: 40, justifyContent: 'center' },
-    chipActive: { backgroundColor: '#05B084', borderColor: '#10B981' },
+    chipActive: { backgroundColor: '#f4fffc', borderColor: '#05B084' },
 });

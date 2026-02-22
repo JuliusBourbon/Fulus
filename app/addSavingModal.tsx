@@ -31,6 +31,13 @@ export default function AddSavingsModal({ visible, onClose, onSuccess, goal, wal
 
         const cleanAmount = parseInt(amount.replace(/[^0-9]/g, ''), 10);
 
+        const sisaTarget = goal.target_amount - goal.saved_amount;
+        if (cleanAmount > sisaTarget) {
+            const formatSisa = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(sisaTarget);
+            alert(`Nominal terlalu besar!\nSisa target untuk tujuan ini hanya tinggal ${formatSisa}`);
+            return;
+        }
+
         const walletData = wallets.find(w => w.id === selectedWalletId);
         if (walletData && cleanAmount > walletData.balance) {
             const sisaSaldo = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(walletData.balance);

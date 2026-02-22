@@ -400,7 +400,7 @@ export const addSavingsToGoal = (
         
         db.execSync(`
             INSERT INTO transactions (wallet_id, category_id, amount, date, type, note)
-            VALUES (${walletId}, NULL, ${amount}, '${date}', 'EXPENSE', 'Menabung untuk: ${goalName}');
+            VALUES (${walletId}, NULL, ${amount}, '${date}', 'EXPENSE', 'Menabung: ${goalName}');
         `);
         
         return true;
