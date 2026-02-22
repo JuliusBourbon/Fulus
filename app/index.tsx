@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, StyleSheet, ScrollView, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, RefreshControl, TouchableOpacity, Dimensions } from 'react-native';
 import Text from '../components/CustomText'
 import { useFocusEffect, useRouter } from 'expo-router';
 import { getWallets, getTotalBalance, getRecentTransactions, getTopGoals, getOnboardingStatus, getUserProfile } from '../services/database';
@@ -20,6 +20,11 @@ const formatRupiah = (number: number) => {
   }).format(number);
 }
 
+const { width } = Dimensions.get('window');
+const CARD_MARGIN = 16;
+const CARD_WIDTH = width - 48; 
+const SNAP_INTERVAL = CARD_WIDTH + CARD_MARGIN;
+
 export default function Index() {
   const router = useRouter();
   const [userName, setUserName] = useState('');
@@ -35,8 +40,23 @@ export default function Index() {
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [isDeleteGoalModalVisible, setDeleteGoalModalVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-
+  
   const gearIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#374151" viewBox="0 0 256 256"><path d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"></path></svg>`;
+  
+  const [activeWalletIndex, setActiveWalletIndex] = useState(0);
+  const [activeGoalIndex, setActiveGoalIndex] = useState(0);
+
+  const handleWalletScroll = (event: any) => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const index = Math.round(scrollPosition / SNAP_INTERVAL);
+    setActiveWalletIndex(index);
+  };
+
+  const handleGoalScroll = (event: any) => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const index = Math.round(scrollPosition / SNAP_INTERVAL);
+    setActiveGoalIndex(index);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -130,11 +150,16 @@ export default function Index() {
               horizontal 
               showsHorizontalScrollIndicator={false} 
               contentContainerStyle={styles.walletListContainer}
+              snapToInterval={SNAP_INTERVAL}
+              decelerationRate="fast"
+              snapToAlignment="start"
+              onScroll={handleWalletScroll}
+              scrollEventThrottle={16}
             >
               {wallets.map((wallet) => (
                 <TouchableOpacity 
                   key={wallet.id} 
-                  style={styles.walletCard}
+                  style={[styles.walletCard, { width: CARD_WIDTH, marginRight: CARD_MARGIN }]}
                   onPress={() => router.push({
                     pathname: '/Statistic',
                     params: { walletId: wallet.id, walletName: wallet.name }
@@ -159,6 +184,13 @@ export default function Index() {
                 </TouchableOpacity>
               ))}
             </ScrollView>
+          )}
+          {wallets.length > 1 && (
+            <View style={styles.paginationContainer}>
+              {wallets.map((_, index) => (
+                <View key={index} style={[styles.dot, activeWalletIndex === index && styles.activeDot]} />
+              ))}
+            </View>
           )}
         </View>
 
@@ -207,7 +239,16 @@ export default function Index() {
               <Text>Belum ada tujuan</Text>
             </TouchableOpacity>
           ) : (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.goalListContainer}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false} 
+              contentContainerStyle={styles.goalListContainer}
+              snapToInterval={SNAP_INTERVAL}
+              decelerationRate="fast"
+              snapToAlignment="start"
+              onScroll={handleGoalScroll}
+              scrollEventThrottle={16}
+            >
               {goals.map((goal) => {
                 const progress = Math.min((goal.saved_amount / goal.target_amount) * 100, 100);
                 
@@ -241,6 +282,13 @@ export default function Index() {
                 );
               })}
             </ScrollView>
+          )}
+          {goals.length > 1 && (
+            <View style={styles.paginationContainer}>
+              {goals.map((_, index) => (
+                <View key={index} style={[styles.dot, activeGoalIndex === index && styles.activeDot]} />
+              ))}
+            </View>
           )}
         </View>
       </ScrollView>
@@ -361,5 +409,29 @@ const styles = StyleSheet.create({
   
   progressBarContainerHome: { height: 8, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 4, overflow: 'hidden', marginBottom: 6 },
   progressBarFillHome: { height: '100%', backgroundColor: 'white' },
-  progressTextHome: { color: 'white', fontSize: 10, textAlign: 'right', fontWeight: 'bold' }
+  progressTextHome: { color: 'white', fontSize: 10, textAlign: 'right', fontWeight: 'bold' },
+
+  carouselContainer: {
+    paddingHorizontal: 24, 
+    paddingBottom: 8,
+  },
+
+  paginationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 16,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#E5E7EB', 
+    marginHorizontal: 4,
+  },
+  activeDot: {
+    width: 20,
+    backgroundColor: '#10B981', 
+  },
 });
