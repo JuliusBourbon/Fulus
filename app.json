@@ -4,7 +4,7 @@
     "slug": "Fulus",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/Fulus.png",
     "scheme": "fulus",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -30,8 +30,8 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/Fulus.png",
+          "imageWidth": 500,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
           "dark": {
