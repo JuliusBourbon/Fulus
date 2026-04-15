@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
-import { getFilteredTransactions } from '../services/database';
-import Text from '../components/CustomText'; 
+import { getFilteredTransactions } from '../../services/database';
+import Text from '../../components/CustomText'; 
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const formatRupiah = (number: number) => {

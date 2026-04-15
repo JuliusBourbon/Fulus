@@ -8,6 +8,7 @@ import {
     Poppins_500Medium, 
     Poppins_700Bold 
 } from '@expo-google-fonts/poppins';
+import '../global.css';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -33,13 +34,11 @@ export default function RootLayout() {
     }
 
     return (
-        <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }}/>
-            <Stack.Screen name="onboarding" options={{ headerShown: false }}/>
-            <Stack.Screen name="Transaction"  options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Transaksi' }}/>
-            <Stack.Screen name="Goals"  options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Tujuan' }}/>
-            <Stack.Screen name="Statistic" options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Statistik' }}/>
-            <Stack.Screen name="Settings"  options={{ headerTitleStyle: {fontFamily: 'Poppins_400Regular', fontSize: 18}, headerTitle: 'Settings' }}/>
+        <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" /> 
+            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="statistic" />
+            <Stack.Screen name="settings" />
         </Stack>
     );
 }

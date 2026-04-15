@@ -1,10 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
-import Text from '../components/CustomText'
+import Text from '../../components/CustomText'
 import {  useFocusEffect } from 'expo-router';
-import { getGoals, addGoal, getWallets, addSavingsToGoal } from '../services/database';
-import { Goal, Wallet } from '../constants/types';
-import AddSavingsModal from './addSavingModal';
+import { getGoals, addGoal, getWallets, addSavingsToGoal } from '../../services/database';
+import { Goal, Wallet } from '../../constants/types';
+import AddSavingsModal from '../addSavingModal';
 
 const formatRupiah = (number: number) => {
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(number);
@@ -44,17 +44,17 @@ export default function GoalsScreen() {
         }
     };
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.title}>Tujuan Finansial</Text>
+        <ScrollView className='flex-1 bg-gray-100'>
+            <View className='pt-[50px] pb-5 px-5 flex-row justify-between items-center'>
+                <Text className='text-black text-xl font-bold'>Tujuan Finansial</Text>
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <Text style={styles.addBtnText}>+ Tujuan</Text>
+                    <Text className='text-[#05B084] font-bold'>+ Tujuan</Text>
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.content}>
+            <View className='p-6'>
                 {goals.length === 0 ? (
-                    <Text style={styles.emptyState}>Belum ada tujuan tabungan.</Text>
+                    <Text className='text-center text-gray-400 mt-10'>Belum ada tujuan tabungan.</Text>
                     ) : (
                     goals.map((goal) => {
                         const progress = Math.min((goal.saved_amount / goal.target_amount) * 100, 100);
@@ -62,8 +62,8 @@ export default function GoalsScreen() {
                         return (
                         <View key={goal.id} style={[styles.goalCard, goal.saved_amount === goal.target_amount && styles.goalCardFullfiled]}>
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={styles.goalName}>{goal.name} </Text>
-                                <Text style={{ color: "#05B084", fontWeight: 'bold', fontSize: 16 }}>{goal.saved_amount === goal.target_amount ? '- Tercapai' : ''}</Text>
+                                <Text className='text-base text-black font-bold mb-1'>{goal.name} </Text>
+                                <Text className='text-[#05B084] font-bold text-md' style={{ color: "#05B084", fontWeight: 'bold', fontSize: 16 }}>{goal.saved_amount === goal.target_amount ? '- Tercapai' : ''}</Text>
                             </View>
                             <Text style={styles.goalAmount}>{formatRupiah(goal.target_amount)}</Text>
                             
